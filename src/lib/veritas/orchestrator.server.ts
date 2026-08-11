@@ -61,9 +61,9 @@ export class PipelineError extends Error {
   }
 }
 
-async function serverSupabase() {
+async function serverSupabase(): Promise<SupabaseClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  return supabaseAdmin;
+  return supabaseAdmin as unknown as SupabaseClient;
 }
 
 export async function runVerification(input: {
