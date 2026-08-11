@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
-import { ShieldCheck } from "lucide-react";
+import verilensLogo from "@/assets/verilens-logo.png";
 
 const NAV = [
   { to: "/", label: "Dashboard" },
@@ -27,7 +27,13 @@ function AppShell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3.5 md:px-8">
           <Link to="/" className="flex items-center gap-2">
-            <ShieldCheck className="size-5 text-primary" />
+            <img
+              src={verilensLogo}
+              alt="VerilensAI logo"
+              width={28}
+              height={28}
+              className="size-7"
+            />
             <span className="font-display text-lg font-semibold tracking-tight">
               Verilens<span className="text-primary">AI</span>
             </span>
@@ -150,7 +156,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
   }),
   shellComponent: RootShell,
