@@ -18,7 +18,7 @@ const SENSATIONAL_WORDS = [
 
 const HEDGE_WORDS = ["allegedly","reportedly","claims","claimed","suggests","may","might","could","appears","unconfirmed"];
 
-const ATTRIBUTION_WORDS = ["according to","said in a statement","told reuters","spokesperson","researchers","study published","官"];
+const ATTRIBUTION_WORDS = ["according to","said in a statement","told reuters","spokesperson","researchers","study published"];
 
 export interface LinguisticFeatures {
   charCount: number;
