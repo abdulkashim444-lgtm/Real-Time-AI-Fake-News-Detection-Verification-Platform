@@ -3,7 +3,6 @@
  * Extract -> clean -> claims -> ML -> evidence retrieval -> fact checks ->
  * source credibility -> fusion -> persistence.
  */
-import { createClient } from "@supabase/supabase-js";
 import { predict, MODEL_VERSION, type MlPrediction } from "./classifier";
 import { assessSource, type SourceAssessment } from "./credibility";
 import { buildEvidence, scoreFactCheckMatch } from "./evidence";
@@ -62,20 +61,9 @@ export class PipelineError extends Error {
   }
 }
 
-function serverSupabase() {
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-  const url = process.env["SUPABASE_URL"]!;
-  return createClient(url, key, {
-    auth: { persistSession: false },
-    global: {
-      fetch: (input, init) => {
-        const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
-        h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
-      },
-    },
-  });
+async function serverSupabase() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
 }
 
 export async function runVerification(input: {
@@ -210,7 +198,7 @@ export async function runVerification(input: {
   let analysisId: string | null = null;
   let persisted = false;
   try {
-    const supabase = serverSupabase();
+    const supabase = await serverSupabase();
     const { data: inserted, error } = await supabase
       .from("analyses")
       .insert({
