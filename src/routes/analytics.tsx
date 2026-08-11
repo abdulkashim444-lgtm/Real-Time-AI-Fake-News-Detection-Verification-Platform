@@ -18,12 +18,12 @@ import { fetchAnalyses, VERDICT_COLOR, VERDICT_ORDER } from "@/lib/veritas/histo
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Model analytics — VeritasAI" },
+      { title: "Model analytics — VerilensAI" },
       {
         name: "description",
-        content: "Verdict distribution, confidence trends, latency breakdown and evidence coverage for VeritasAI.",
+        content: "Verdict distribution, confidence trends, latency breakdown and evidence coverage for VerilensAI.",
       },
-      { property: "og:title", content: "Model analytics — VeritasAI" },
+      { property: "og:title", content: "Model analytics — VerilensAI" },
       { property: "og:description", content: "Operational metrics for the verification pipeline." },
     ],
   }),

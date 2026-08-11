@@ -15,13 +15,13 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/analyze")({
   head: () => ({
     meta: [
-      { title: "Analyze an article — VeritasAI" },
+      { title: "Analyze an article — VerilensAI" },
       {
         name: "description",
         content:
           "Submit a URL, headline, article text or a .txt file and get an evidence-weighted credibility assessment.",
       },
-      { property: "og:title", content: "Analyze an article — VeritasAI" },
+      { property: "og:title", content: "Analyze an article — VerilensAI" },
       {
         property: "og:description",
         content: "Evidence retrieval, fact-check matching, source credibility and explainable scoring.",
@@ -69,7 +69,7 @@ function AnalyzePage() {
       <header className="max-w-2xl">
         <h1 className="text-3xl font-semibold">Analyze news</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paste a URL, a headline, or the full article. VeritasAI extracts checkable claims, retrieves
+          Paste a URL, a headline, or the full article. VerilensAI extracts checkable claims, retrieves
           independent coverage and published fact checks, scores the source, and explains every signal it used.
         </p>
       </header>
