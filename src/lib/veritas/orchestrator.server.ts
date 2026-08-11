@@ -3,6 +3,7 @@
  * Extract -> clean -> claims -> ML -> evidence retrieval -> fact checks ->
  * source credibility -> fusion -> persistence.
  */
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { predict, MODEL_VERSION, type MlPrediction } from "./classifier";
 import { assessSource, type SourceAssessment } from "./credibility";
 import { buildEvidence, scoreFactCheckMatch } from "./evidence";
