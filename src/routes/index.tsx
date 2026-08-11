@@ -10,13 +10,13 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VeritasAI — Real-Time News Verification Dashboard" },
+      { title: "VerilensAI — Real-Time News Verification Dashboard" },
       {
         name: "description",
         content:
           "Analyst dashboard for evidence-weighted news verification: verdict distribution, confidence, latency and recent analyses.",
       },
-      { property: "og:title", content: "VeritasAI — Real-Time News Verification Dashboard" },
+      { property: "og:title", content: "VerilensAI — Real-Time News Verification Dashboard" },
       {
         property: "og:description",
         content: "Track verdicts, confidence and evidence coverage across every article you verify.",
@@ -55,7 +55,7 @@ function Dashboard() {
             Evidence-weighted verification, not a truth oracle
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            VeritasAI fuses an interpretable stylometric model with live news retrieval, published fact
+            VerilensAI fuses an interpretable stylometric model with live news retrieval, published fact
             checks and source-credibility signals — and tells you exactly which of those were available.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">

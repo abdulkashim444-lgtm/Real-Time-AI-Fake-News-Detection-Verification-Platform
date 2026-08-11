@@ -29,7 +29,7 @@ function AppShell({ children }: { children: ReactNode }) {
           <Link to="/" className="flex items-center gap-2">
             <ShieldCheck className="size-5 text-primary" />
             <span className="font-display text-lg font-semibold tracking-tight">
-              Veritas<span className="text-primary">AI</span>
+              Verilens<span className="text-primary">AI</span>
             </span>
           </Link>
           <nav className="flex flex-wrap items-center gap-1 text-sm">
@@ -52,7 +52,7 @@ function AppShell({ children }: { children: ReactNode }) {
       </header>
       <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">{children}</main>
       <footer className="mx-auto max-w-7xl px-4 pb-10 text-xs text-muted-foreground md:px-8">
-        VeritasAI reports evidence-weighted likelihoods. Fake-news detection is not equivalent to factual
+        VerilensAI reports evidence-weighted likelihoods. Fake-news detection is not equivalent to factual
         verification, and no verdict here should be treated as proof.
       </footer>
     </div>
@@ -124,13 +124,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "VeritasAI — Evidence-Based News Verification" },
+      { title: "VerilensAI — Evidence-Based News Verification" },
       {
         name: "description",
         content:
           "Verify news articles with evidence retrieval, published fact checks, source credibility and explainable modelling.",
       },
-      { property: "og:title", content: "VeritasAI — Evidence-Based News Verification" },
+      { property: "og:title", content: "VerilensAI — Evidence-Based News Verification" },
       {
         property: "og:description",
         content: "Evidence-weighted credibility assessment for news articles, claims and URLs.",

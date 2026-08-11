@@ -12,9 +12,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/history")({
   head: () => ({
     meta: [
-      { title: "Analysis history — VeritasAI" },
-      { name: "description", content: "Search, filter and manage every article VeritasAI has verified." },
-      { property: "og:title", content: "Analysis history — VeritasAI" },
+      { title: "Analysis history — VerilensAI" },
+      { name: "description", content: "Search, filter and manage every article VerilensAI has verified." },
+      { property: "og:title", content: "Analysis history — VerilensAI" },
       { property: "og:description", content: "A searchable log of verdicts, confidence and processing time." },
     ],
   }),
