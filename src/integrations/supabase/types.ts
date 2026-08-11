@@ -14,7 +14,320 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      analyses: {
+        Row: {
+          confidence: number
+          content: string
+          contradiction_score: number
+          created_at: string
+          domain: string | null
+          evidence_latency_ms: number
+          evidence_score: number
+          explanations: Json
+          factcheck_latency_ms: number
+          factcheck_match: boolean
+          id: string
+          language: string | null
+          linguistic_features: Json
+          ml_label: string
+          ml_latency_ms: number
+          ml_probability: number
+          model_version: string
+          processing_time_ms: number
+          service_status: Json
+          source_score: number
+          title: string
+          url: string | null
+          verdict: string
+        }
+        Insert: {
+          confidence: number
+          content: string
+          contradiction_score?: number
+          created_at?: string
+          domain?: string | null
+          evidence_latency_ms?: number
+          evidence_score?: number
+          explanations?: Json
+          factcheck_latency_ms?: number
+          factcheck_match?: boolean
+          id?: string
+          language?: string | null
+          linguistic_features?: Json
+          ml_label: string
+          ml_latency_ms?: number
+          ml_probability: number
+          model_version: string
+          processing_time_ms?: number
+          service_status?: Json
+          source_score?: number
+          title: string
+          url?: string | null
+          verdict: string
+        }
+        Update: {
+          confidence?: number
+          content?: string
+          contradiction_score?: number
+          created_at?: string
+          domain?: string | null
+          evidence_latency_ms?: number
+          evidence_score?: number
+          explanations?: Json
+          factcheck_latency_ms?: number
+          factcheck_match?: boolean
+          id?: string
+          language?: string | null
+          linguistic_features?: Json
+          ml_label?: string
+          ml_latency_ms?: number
+          ml_probability?: number
+          model_version?: string
+          processing_time_ms?: number
+          service_status?: Json
+          source_score?: number
+          title?: string
+          url?: string | null
+          verdict?: string
+        }
+        Relationships: []
+      }
+      claims: {
+        Row: {
+          analysis_id: string
+          claim_text: string
+          claim_type: string
+          created_at: string
+          id: string
+          importance: number
+        }
+        Insert: {
+          analysis_id: string
+          claim_text: string
+          claim_type?: string
+          created_at?: string
+          id?: string
+          importance?: number
+        }
+        Update: {
+          analysis_id?: string
+          claim_text?: string
+          claim_type?: string
+          created_at?: string
+          id?: string
+          importance?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "claims_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidence: {
+        Row: {
+          analysis_id: string
+          claim_id: string | null
+          created_at: string
+          credibility_score: number
+          evidence_type: string
+          id: string
+          published_at: string | null
+          publisher: string | null
+          rationale: string | null
+          similarity_score: number
+          snippet: string | null
+          title: string
+          url: string | null
+        }
+        Insert: {
+          analysis_id: string
+          claim_id?: string | null
+          created_at?: string
+          credibility_score?: number
+          evidence_type?: string
+          id?: string
+          published_at?: string | null
+          publisher?: string | null
+          rationale?: string | null
+          similarity_score?: number
+          snippet?: string | null
+          title: string
+          url?: string | null
+        }
+        Update: {
+          analysis_id?: string
+          claim_id?: string | null
+          created_at?: string
+          credibility_score?: number
+          evidence_type?: string
+          id?: string
+          published_at?: string | null
+          publisher?: string | null
+          rationale?: string | null
+          similarity_score?: number
+          snippet?: string | null
+          title?: string
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "analyses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidence_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fact_checks: {
+        Row: {
+          analysis_id: string
+          claim_date: string | null
+          claim_id: string | null
+          created_at: string
+          id: string
+          match_score: number
+          matched_claim: string | null
+          publisher: string | null
+          rating: string | null
+          review_url: string | null
+        }
+        Insert: {
+          analysis_id: string
+          claim_date?: string | null
+          claim_id?: string | null
+          created_at?: string
+          id?: string
+          match_score?: number
+          matched_claim?: string | null
+          publisher?: string | null
+          rating?: string | null
+          review_url?: string | null
+        }
+        Update: {
+          analysis_id?: string
+          claim_date?: string | null
+          claim_id?: string | null
+          created_at?: string
+          id?: string
+          match_score?: number
+          matched_claim?: string | null
+          publisher?: string | null
+          rating?: string | null
+          review_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fact_checks_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "analyses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fact_checks_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      model_metrics: {
+        Row: {
+          accuracy: number | null
+          confusion_matrix: Json | null
+          created_at: string
+          dataset: string | null
+          f1: number | null
+          id: string
+          model_version: string
+          notes: string | null
+          precision_score: number | null
+          recall: number | null
+          roc_auc: number | null
+          sample_size: number | null
+        }
+        Insert: {
+          accuracy?: number | null
+          confusion_matrix?: Json | null
+          created_at?: string
+          dataset?: string | null
+          f1?: number | null
+          id?: string
+          model_version: string
+          notes?: string | null
+          precision_score?: number | null
+          recall?: number | null
+          roc_auc?: number | null
+          sample_size?: number | null
+        }
+        Update: {
+          accuracy?: number | null
+          confusion_matrix?: Json | null
+          created_at?: string
+          dataset?: string | null
+          f1?: number | null
+          id?: string
+          model_version?: string
+          notes?: string | null
+          precision_score?: number | null
+          recall?: number | null
+          roc_auc?: number | null
+          sample_size?: number | null
+        }
+        Relationships: []
+      }
+      sources: {
+        Row: {
+          article_count: number
+          category: string | null
+          country: string | null
+          created_at: string
+          credibility_score: number
+          domain: string
+          id: string
+          last_seen_at: string
+          publisher: string | null
+          signals: Json
+        }
+        Insert: {
+          article_count?: number
+          category?: string | null
+          country?: string | null
+          created_at?: string
+          credibility_score?: number
+          domain: string
+          id?: string
+          last_seen_at?: string
+          publisher?: string | null
+          signals?: Json
+        }
+        Update: {
+          article_count?: number
+          category?: string | null
+          country?: string | null
+          created_at?: string
+          credibility_score?: number
+          domain?: string
+          id?: string
+          last_seen_at?: string
+          publisher?: string | null
+          signals?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
