@@ -11,6 +11,53 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster } from "@/components/ui/sonner";
+import { ShieldCheck } from "lucide-react";
+
+const NAV = [
+  { to: "/", label: "Dashboard" },
+  { to: "/analyze", label: "Analyze" },
+  { to: "/history", label: "History" },
+  { to: "/analytics", label: "Analytics" },
+] as const;
+
+function AppShell({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3.5 md:px-8">
+          <Link to="/" className="flex items-center gap-2">
+            <ShieldCheck className="size-5 text-primary" />
+            <span className="font-display text-lg font-semibold tracking-tight">
+              Veritas<span className="text-primary">AI</span>
+            </span>
+          </Link>
+          <nav className="flex flex-wrap items-center gap-1 text-sm">
+            {NAV.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                activeOptions={{ exact: item.to === "/" }}
+                className="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                activeProps={{ className: "bg-secondary text-foreground" }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <span className="ml-auto hidden font-mono text-[11px] text-muted-foreground md:block">
+            evidence-weighted verification · not absolute truth
+          </span>
+        </div>
+      </header>
+      <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">{children}</main>
+      <footer className="mx-auto max-w-7xl px-4 pb-10 text-xs text-muted-foreground md:px-8">
+        VeritasAI reports evidence-weighted likelihoods. Fake-news detection is not equivalent to factual
+        verification, and no verdict here should be treated as proof.
+      </footer>
+    </div>
+  );
+}
 
 function NotFoundComponent() {
   return (
@@ -77,11 +124,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "VeritasAI — Evidence-Based News Verification" },
+      {
+        name: "description",
+        content:
+          "Verify news articles with evidence retrieval, published fact checks, source credibility and explainable modelling.",
+      },
+      { property: "og:title", content: "VeritasAI — Evidence-Based News Verification" },
+      {
+        property: "og:description",
+        content: "Evidence-weighted credibility assessment for news articles, claims and URLs.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -90,6 +143,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -120,7 +179,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AppShell>
+        <Outlet />
+      </AppShell>
+      <Toaster position="top-right" />
     </QueryClientProvider>
   );
 }
