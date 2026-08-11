@@ -33,8 +33,8 @@ export async function fetchAnalyses(limit = 200): Promise<AnalysisRow[]> {
 }
 
 export async function deleteAnalysis(id: string) {
-  const { error } = await supabase.from("analyses").delete().eq("id", id);
-  if (error) throw error;
+  const { deleteAnalysisFn } = await import("@/lib/history.functions");
+  await deleteAnalysisFn({ data: { id } });
 }
 
 export const VERDICT_ORDER = [
