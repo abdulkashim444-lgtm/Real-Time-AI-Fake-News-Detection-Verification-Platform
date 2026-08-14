@@ -8,7 +8,10 @@ Built with React, TypeScript, TanStack Start, Tailwind CSS, Supabase, and Rechar
 
 ---
 
+
 <img width="1887" height="918" alt="Image" src="https://github.com/user-attachments/assets/fc0efca7-179e-4da4-a799-d7251ab21025" />
+
+
 
 # ✨ Features
 
@@ -142,6 +145,7 @@ Built with React, TypeScript, TanStack Start, Tailwind CSS, Supabase, and Rechar
 VeriLensAI aims to improve digital information trust by combining explainable machine learning, source analysis, independent evidence, and fact-checking signals into a transparent verification workflow. The platform emphasizes evidence-backed analysis and clearly communicates uncertainty when reliable verification signals are unavailable.
 
 VeriLensAI demonstrates practical expertise in AI Engineering, NLP, Explainable AI, Full-Stack Development, Data Analytics, and Evidence-Based Information Verification.
+
 
 ## Check out :
 
