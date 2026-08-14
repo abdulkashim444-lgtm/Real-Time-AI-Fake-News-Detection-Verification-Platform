@@ -243,16 +243,39 @@ export async function extractArticleFromUrl(rawUrl: string): Promise<ExtractedAr
   if (BLOCKED_HOST.test(host) || host.startsWith("[") || /^\d+\.\d+\.\d+\.\d+$/.test(host))
     return fail("Requests to private, local, or raw-IP addresses are blocked.");
 
-  try {
-    const res = await fetchWithTimeout(
+  const BROWSER_UA =
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36";
+  const BOT_UA = "Mozilla/5.0 (compatible; VerilensAI/1.0; +https://verilens-ai.lovable.app)";
+
+  const attempt = (ua: string) =>
+    fetchWithTimeout(
       parsed.toString(),
       {
         redirect: "follow",
-        headers: { "user-agent": "VeritasAI-Verifier/1.0 (+article extraction)", accept: "text/html" },
+        headers: {
+          "user-agent": ua,
+          accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          "accept-language": "en-US,en;q=0.9",
+          "cache-control": "no-cache",
+        },
       },
       10000,
     );
-    if (!res.ok) return fail(`The publisher responded ${res.status}.`);
+
+  try {
+    let res = await attempt(BROWSER_UA);
+    // Many publishers gate bots/paywalls with 401/403/451 — retry once identifying honestly.
+    if ([401, 403, 429, 451].includes(res.status)) {
+      console.warn(`[extract] ${host} responded ${res.status} to browser UA; retrying`);
+      res = await attempt(BOT_UA);
+    }
+    if ([401, 403, 451].includes(res.status)) {
+      return fail(
+        `${host} blocks automated article fetching (HTTP ${res.status}). Paste the headline and article text below instead.`,
+      );
+    }
+    if (res.status === 429) return fail(`${host} is rate-limiting requests. Try again shortly, or paste the text below.`);
+    if (!res.ok) return fail(`The publisher responded ${res.status}. Paste the article text below to analyze it.`);
     const type = res.headers.get("content-type") ?? "";
     if (!type.includes("html") && !type.includes("text")) return fail("The URL did not return an HTML document.");
     const buffer = await res.arrayBuffer();
