@@ -33,18 +33,94 @@ export interface NewsSearchResult {
   message?: string;
 }
 
+/**
+ * NewsAPI /v2/everything rejects (400) queries containing its boolean syntax
+ * characters, bare operators, or more than ~500 chars. Reduce any free text to
+ * a small set of plain alphanumeric terms.
+ */
+const NEWS_RESERVED = new Set(["and", "or", "not"]);
+
+export function sanitiseNewsQuery(query: string, maxTerms = 8): string {
+  const terms = (query ?? "")
+    .normalize("NFKD")
+    .replace(/["'’“”()\[\]{}+\-!^~*?:\\/&|<>=#@$%]/g, " ")
+    .split(/\s+/)
+    .map((t) => t.replace(/[^\p{L}\p{N}.]/gu, "").replace(/^\.+|\.+$/g, ""))
+    .filter((t) => t.length >= 2 && t.length <= 40 && !NEWS_RESERVED.has(t.toLowerCase()))
+    .slice(0, maxTerms);
+  return terms.join(" ").slice(0, 480).trim();
+}
+
+async function readNewsError(res: Response): Promise<string> {
+  try {
+    const body = (await res.json()) as { code?: string; message?: string };
+    const detail = [body.code, body.message].filter(Boolean).join(": ");
+    // Defensive: never echo anything key-shaped back to the client.
+    return detail ? detail.replace(/[A-Fa-f0-9]{24,}/g, "[redacted]").slice(0, 300) : "";
+  } catch {
+    return "";
+  }
+}
+
+async function requestNews(query: string, pageSize: number, key: string) {
+  const url = new URL("https://newsapi.org/v2/everything");
+  // URLSearchParams percent-encodes every value.
+  url.searchParams.set("q", query);
+  url.searchParams.set("pageSize", String(Math.min(Math.max(pageSize, 1), 100)));
+  url.searchParams.set("sortBy", "relevancy");
+  url.searchParams.set("language", "en");
+  return fetchWithTimeout(url.toString(), { headers: { "X-Api-Key": key } });
+}
+
 export async function searchNews(query: string, pageSize = 10): Promise<NewsSearchResult> {
   const key = process.env["NEWS_API_KEY"];
   if (!key) return { articles: [], status: "unconfigured", message: "NEWS_API_KEY is not configured." };
+
+  const primary = sanitiseNewsQuery(query, 8);
+  if (!primary) {
+    return { articles: [], status: "error", message: "No searchable keywords could be derived from this article." };
+  }
+
   try {
-    const url = new URL("https://newsapi.org/v2/everything");
-    url.searchParams.set("q", query.slice(0, 480));
-    url.searchParams.set("pageSize", String(pageSize));
-    url.searchParams.set("sortBy", "relevancy");
-    url.searchParams.set("language", "en");
-    const res = await fetchWithTimeout(url.toString(), { headers: { "X-Api-Key": key } });
+    let res = await requestNews(primary, pageSize, key);
+
+    // A 400 usually means the query still upset NewsAPI's parser — retry with
+    // a much narrower keyword set before giving up.
+    if (res.status === 400) {
+      const detail = await readNewsError(res);
+      const fallback = sanitiseNewsQuery(primary, 3);
+      console.warn(`[newsapi] 400 for primary query (${primary.length} chars): ${detail || "no detail"}`);
+      if (fallback && fallback !== primary) {
+        res = await requestNews(fallback, pageSize, key);
+      }
+      if (!res.ok) {
+        const retryDetail = res.status === 400 ? await readNewsError(res) : "";
+        console.warn(`[newsapi] retry responded ${res.status}: ${retryDetail || "no detail"}`);
+        const shown = retryDetail || detail;
+        return {
+          articles: [],
+          status: "error",
+          message: `News provider rejected the search (400)${shown ? `: ${shown}` : "."}`,
+        };
+      }
+    }
+
+    if (res.status === 401 || res.status === 403) {
+      const detail = await readNewsError(res);
+      console.warn(`[newsapi] auth failure ${res.status}: ${detail || "no detail"}`);
+      return { articles: [], status: "error", message: `News provider rejected the API key (${res.status}).` };
+    }
     if (res.status === 429) return { articles: [], status: "rate_limited", message: "News provider rate limit reached." };
-    if (!res.ok) return { articles: [], status: "error", message: `News provider responded ${res.status}.` };
+    if (!res.ok) {
+      const detail = await readNewsError(res);
+      console.warn(`[newsapi] responded ${res.status}: ${detail || "no detail"}`);
+      return {
+        articles: [],
+        status: "error",
+        message: `News provider responded ${res.status}${detail ? `: ${detail}` : "."}`,
+      };
+    }
+
     const json = (await res.json()) as {
       articles?: Array<{
         title?: string;
