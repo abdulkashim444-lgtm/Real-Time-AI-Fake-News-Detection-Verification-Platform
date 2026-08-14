@@ -69,7 +69,13 @@ async function requestNews(query: string, pageSize: number, key: string) {
   url.searchParams.set("pageSize", String(Math.min(Math.max(pageSize, 1), 100)));
   url.searchParams.set("sortBy", "relevancy");
   url.searchParams.set("language", "en");
-  return fetchWithTimeout(url.toString(), { headers: { "X-Api-Key": key } });
+  return fetchWithTimeout(url.toString(), {
+    headers: {
+      "X-Api-Key": key,
+      "User-Agent": "VerilensAI/1.0 (+https://verilens-ai.lovable.app)",
+      Accept: "application/json",
+    },
+  });
 }
 
 export async function searchNews(query: string, pageSize = 10): Promise<NewsSearchResult> {
