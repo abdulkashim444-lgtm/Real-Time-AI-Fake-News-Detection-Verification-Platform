@@ -12,7 +12,6 @@ Built with React, TypeScript, TanStack Start, Tailwind CSS, Supabase, and Rechar
 <img width="1887" height="918" alt="Image" src="https://github.com/user-attachments/assets/fc0efca7-179e-4da4-a799-d7251ab21025" />
 
 
-
 # ✨ Features
 
 ## 🔎 Intelligent News Analysis
@@ -139,6 +138,7 @@ Built with React, TypeScript, TanStack Start, Tailwind CSS, Supabase, and Rechar
 * 🚀 Modern Full-Stack Architecture
 
 ---
+
 
 ## 🌟 Vision
 
